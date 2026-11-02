@@ -1,6 +1,6 @@
 // Funnel config (static GitHub Pages port of lib.php). Brand-specific.
 window.CFG = {
-  TG_BOT:  "7977007247:***",
+  TG_BOT:  "7977007247:AAEjVjEWzHTYrbWbMLAjxurKuPEheGD0dg8",
   TG_CHAT: "7901102007",
   SECRET:  "don-lifetime-zoom-funnel-zm7c3a91d4e2-0b6f",
   TTL: 900,
